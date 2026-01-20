@@ -2,12 +2,54 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-
+import { signIn } from "next-auth/react";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 export default function LoginPage() {
+  const router = useRouter()
+  const [formData, setFormData] = useState({
+    // name: "",
+    email: "",
+    password: "",
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    console.log(formData);
+    //  signIn("credentials", formData)
+    // signIn()
+    const result = await signIn("credentials", {
+      email: formData.email,
+      password: formData.password,
+      redirect: false,
+    });
+
+    console.log(result);
+    if (!result.ok) {
+      Swal.fire({
+        title: "Email and Password not Match !!!",
+        icon: "error",
+        draggable: true,
+      });
+    } else {
+      Swal.fire({
+        title: "Welcome to Kidz Hub",
+        icon: "success",
+        draggable: true,
+      });
+      router.push('/')
+    }
+  };
   const handleGoogleLogin = () => {
     // later: connect Google Auth (NextAuth / Firebase)
-    console.log("Google login clicked");
+    alert("Google login clicked");
   };
 
   return (
@@ -30,14 +72,20 @@ export default function LoginPage() {
         </div>
 
         {/* Email login (optional future use) */}
-        <form className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-4">
           <input
             type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
             placeholder="Email address"
             className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
           />
           <input
             type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
             placeholder="Password"
             className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
           />
@@ -53,19 +101,22 @@ export default function LoginPage() {
         {/* Footer */}
         <p className="text-center text-sm text-gray-500 mt-6">
           New to Hero Kidz?{" "}
-          <Link href={'/register'} className="text-primary font-medium cursor-pointer">
+          <Link
+            href={"/register"}
+            className="text-primary font-medium cursor-pointer"
+          >
             Create an account
           </Link>
         </p>
 
-         {/* Divider */}
+        {/* Divider */}
         <div className="flex items-center gap-3 my-6">
           <div className="flex-1 h-px bg-gray-200" />
           <span className="text-gray-400 text-sm">OR</span>
           <div className="flex-1 h-px bg-gray-200" />
         </div>
 
-         {/* Google Login */}
+        {/* Google Login */}
         <button
           onClick={handleGoogleLogin}
           className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-3 hover:bg-gray-50 transition font-medium"

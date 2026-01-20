@@ -4,8 +4,11 @@ import Image from "next/image";
 import { FcGoogle } from "react-icons/fc";
 import { useState } from "react";
 import Link from "next/link";
+import { postUser } from "@/actions/server/auth";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -17,10 +20,15 @@ export default function RegisterPage() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     // later: connect registration logic (NextAuth / Firebase)
-    console.log("Register data:", formData);
+    // console.log("Register data:", formData);
+    const result = await postUser(formData);
+    if (result.acknowledged) {
+      alert("successfull please login");
+      router.push("/login");
+    }
   };
 
   const handleGoogleRegister = () => {
@@ -85,7 +93,12 @@ export default function RegisterPage() {
         {/* Footer */}
         <p className="text-center text-sm text-gray-500 mt-6">
           Already have an account?{" "}
-          <Link href={'/login'} className="text-primary font-medium cursor-pointer">Login</Link>
+          <Link
+            href={"/login"}
+            className="text-primary font-medium cursor-pointer"
+          >
+            Login
+          </Link>
         </p>
 
         {/* Divider */}

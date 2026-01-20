@@ -13,5 +13,5 @@ export const getSigleProduct = async (id) => {
 
   const query = { _id: new ObjectId(id) };
   const product = await dbConnect(collections.PRODUCTS).findOne(query);
-  return product || {};
+  return {...product, _id:product._id.toString()} || {};
 };

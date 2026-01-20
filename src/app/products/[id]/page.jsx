@@ -4,7 +4,7 @@ import React from "react";
 
 export const generateMetadata = async ({ params }) => {
   const { id } = await params;
-  const product = await getSigleProduct(id) || {};
+  const product = (await getSigleProduct(id)) || {};
 
   return {
     title: product?.title,
@@ -34,7 +34,9 @@ export const generateMetadata = async ({ params }) => {
 
 const ProductDetails = async ({ params, onAddToCart }) => {
   const { id } = await params;
-  const product = (await getSigleProduct(id)) || {};
+  console.log(id);
+  const product = await getSigleProduct(id) || {};
+  console.log(product);
   if (!product) return null;
 
   const {
@@ -86,7 +88,7 @@ const ProductDetails = async ({ params, onAddToCart }) => {
         </div>
 
         {/* Add to Cart */}
-       <CartButton product={product}/>
+        <CartButton product={product} />
       </div>
 
       <div className="col-span-full">

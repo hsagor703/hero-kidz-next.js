@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "../components/layouts/Navbar";
 import Footer from "../components/layouts/Footer";
+import NextAuthProvider from "@/provider/NextAuthProvider";
 // import normalFont from "./../fonts/mayaboit-normal.ttf";
 
 const poppins = Poppins({
@@ -92,21 +93,22 @@ export const metadata = {
   category: "Kids & Education",
 };
 
-
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={`${poppins.className} antialiased`}>
-        <header className="py-2 md:w-11/12 mx-auto">
-          <Navbar />
-        </header>
-        <main className="py-2 md:w-11/12 mx-auto min-h-[calc(100vh-302px)]">
-          {children}
-        </main>
-        <footer>
-          <Footer />
-        </footer>
-      </body>
-    </html>
+    <NextAuthProvider>
+      <html lang="en">
+        <body className={`${poppins.className} antialiased`}>
+          <header className="py-2 md:w-11/12 mx-auto">
+            <Navbar />
+          </header>
+          <main className="py-2 md:w-11/12 mx-auto min-h-[calc(100vh-302px)]">
+            {children}
+          </main>
+          <footer>
+            <Footer />
+          </footer>
+        </body>
+      </html>
+    </NextAuthProvider>
   );
 }
