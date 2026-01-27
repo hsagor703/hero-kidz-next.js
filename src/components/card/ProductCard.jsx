@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import CartButton from "../buttons/CartButton";
 
 const ProductCard = ({ product }) => {
   const { title, image, price, discount, ratings, reviews, sold, _id } =
@@ -48,12 +49,7 @@ const ProductCard = ({ product }) => {
         </div>
 
         {/* Button */}
-       <button
-          //   onClick={() => onAddToCart(product)}
-          className="btn btn-primary w-full"
-        >
-          Add to  Cart
-        </button>
+       <CartButton product={{...product, _id:_id.toString()}}/>
         <Link href={`/products/${_id}`}>
           <button className="btn btn-primary btn-outline w-full">
             View Details

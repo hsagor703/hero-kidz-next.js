@@ -6,9 +6,13 @@ import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { signIn } from "next-auth/react";
 import Swal from "sweetalert2";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import SocialButtons from "@/components/buttons/SocialButtons";
 export default function LoginPage() {
-  const router = useRouter()
+  const router = useRouter();
+  const params = useSearchParams();
+  const callback = params.get("callbackUrl") || "/";
+  console.log(callback);
   const [formData, setFormData] = useState({
     // name: "",
     email: "",
@@ -29,12 +33,13 @@ export default function LoginPage() {
       email: formData.email,
       password: formData.password,
       redirect: false,
+      callbackUrl: params.get("callbackUrl") || "/",
     });
 
     console.log(result);
     if (!result.ok) {
       Swal.fire({
-        title: "Email and Password not Match !!!",
+        title: "Email and Password not Match !!! please try google login or register",
         icon: "error",
         draggable: true,
       });
@@ -44,12 +49,8 @@ export default function LoginPage() {
         icon: "success",
         draggable: true,
       });
-      router.push('/')
+      router.push(callback);
     }
-  };
-  const handleGoogleLogin = () => {
-    // later: connect Google Auth (NextAuth / Firebase)
-    alert("Google login clicked");
   };
 
   return (
@@ -102,7 +103,7 @@ export default function LoginPage() {
         <p className="text-center text-sm text-gray-500 mt-6">
           New to Hero Kidz?{" "}
           <Link
-            href={"/register"}
+            href={`/register?callbackUrl=${callback}`}
             className="text-primary font-medium cursor-pointer"
           >
             Create an account
@@ -117,13 +118,7 @@ export default function LoginPage() {
         </div>
 
         {/* Google Login */}
-        <button
-          onClick={handleGoogleLogin}
-          className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-3 hover:bg-gray-50 transition font-medium"
-        >
-          <FcGoogle size={22} />
-          Continue with Google
-        </button>
+        <SocialButtons />
       </div>
     </div>
   );

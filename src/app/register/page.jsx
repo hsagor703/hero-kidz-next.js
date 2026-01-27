@@ -5,10 +5,15 @@ import { FcGoogle } from "react-icons/fc";
 import { useState } from "react";
 import Link from "next/link";
 import { postUser } from "@/actions/server/auth";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import SocialButtons from "@/components/buttons/SocialButtons";
+import { signIn } from "next-auth/react";
+import Swal from "sweetalert2";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const params = useSearchParams();
+  const callbackUrl = params.get("callbackUrl") || "/";
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -26,8 +31,26 @@ export default function RegisterPage() {
     // console.log("Register data:", formData);
     const result = await postUser(formData);
     if (result.acknowledged) {
-      alert("successfull please login");
-      router.push("/login");
+      // router.push("/login");
+      const result = await signIn("credentials", {
+        email: formData.email,
+        password: formData.password,
+        callbackUrl: callbackUrl,
+      });
+      if (result.ok) {
+        Swal.fire({
+          title: "Welcome to Kidz Hub",
+          icon: "success",
+          draggable: true,
+        });
+        router.push(callback);
+      }
+    } else {
+      Swal.fire({
+        title: "Email and Password not Match !!!",
+        icon: "error",
+        draggable: true,
+      });
     }
   };
 
@@ -109,13 +132,7 @@ export default function RegisterPage() {
         </div>
 
         {/* Google Register */}
-        <button
-          onClick={handleGoogleRegister}
-          className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-3 hover:bg-gray-50 transition font-medium"
-        >
-          <FcGoogle size={22} />
-          Continue with Google
-        </button>
+        <SocialButtons />
       </div>
     </div>
   );
