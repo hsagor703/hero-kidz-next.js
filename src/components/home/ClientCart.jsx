@@ -1,18 +1,19 @@
 "use client";
 import React, { useMemo, useState } from "react";
 import CartItem from "../card/CartItem";
+import Link from "next/link";
 
 const ClientCart = ({ cartItem = [] }) => {
   const [items, setItems] = useState(cartItem);
 
   const totalItems = useMemo(
     () => items.reduce((sum, item) => sum + item.quantity, 0),
-    [items]
+    [items],
   );
 
   const totalPrice = useMemo(
     () => items.reduce((sum, item) => sum + item.price * item.quantity, 0),
-    [items]
+    [items],
   );
 
   const removeItem = (id) => {
@@ -22,22 +23,15 @@ const ClientCart = ({ cartItem = [] }) => {
   const updateQuantity = (id, quantity) => {
     if (quantity < 1) return;
     setItems((prevItems) =>
-      prevItems.map((item) =>
-        item._id === id ? { ...item, quantity } : item
-      )
+      prevItems.map((item) => (item._id === id ? { ...item, quantity } : item)),
     );
-  };
-
-  const handleConfirmOrder = () => {
-    console.log("Order confirmed:", items);
-    alert("Order Confirmed 🎉");
   };
 
   return (
     <div>
       <p className="py-3">
-        <span className="text-primary font-bold">{items.length}</span> Items Found
-        in the Cart
+        <span className="text-primary font-bold">{items.length}</span> Items
+        Found in the Cart
       </p>
 
       <div className="flex flex-col lg:flex-row gap-6">
@@ -56,9 +50,7 @@ const ClientCart = ({ cartItem = [] }) => {
         {/* RIGHT: Cart Summary */}
         <div className="flex-1">
           <div className="card bg-base-100 shadow-lg p-4 sticky top-4">
-            <h2 className="text-lg font-bold mb-4 text-center">
-              Cart Summary
-            </h2>
+            <h2 className="text-lg font-bold mb-4 text-center">Cart Summary</h2>
 
             {/* Summary Items */}
             <div className="space-y-3">
@@ -93,12 +85,9 @@ const ClientCart = ({ cartItem = [] }) => {
             </div>
 
             {/* Confirm Button */}
-            <button
-              onClick={handleConfirmOrder}
-              className="btn btn-primary w-full mt-4"
-            >
+            <Link href={'/checkout'} className="btn btn-primary w-full mt-4">
               Confirm Order
-            </button>
+            </Link>
           </div>
         </div>
       </div>
