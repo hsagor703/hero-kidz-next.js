@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
+import { TiShoppingCart } from "react-icons/ti";
 
 const CartButton = ({ product }) => {
   const session = useSession();
@@ -32,6 +33,7 @@ const CartButton = ({ product }) => {
       onClick={handleAddToCart}
       className="btn w-full btn-primary"
     >
+      <TiShoppingCart/>
       Add to Cart
     </button>
   );

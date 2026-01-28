@@ -1,12 +1,16 @@
 "use server";
 
+import { authOptions } from "@/lib/authOption";
+import { ObjectId } from "mongodb";
 import { getServerSession } from "next-auth";
+import { revalidatePath } from "next/cache";
+import { cache } from "react";
 
 const { dbConnect, collections } = require("@/lib/dbConnect");
 const cartCollection = dbConnect(collections.CART);
 
 export const handleCart = async ({ product, inc = true }) => {
-  const { user } = (await getServerSession()) || {};
+  const { user } = (await getServerSession(authOptions)) || {};
   if (!user) return false;
   //   getcart item user email and productId
   const query = { email: user?.email, productId: product?._id };
@@ -18,10 +22,7 @@ export const handleCart = async ({ product, inc = true }) => {
         quantity: inc ? 1 : -1,
       },
     };
-    const result = await cartCollection.updateOne(
-      query,
-      updatedData,
-    );
+    const result = await cartCollection.updateOne(query, updatedData);
     return { success: Boolean(result.modifiedCount) };
   } else {
     // not exist then add
@@ -32,9 +33,62 @@ export const handleCart = async ({ product, inc = true }) => {
       quantity: 1,
       image: product?.image,
       price: product?.price - (product?.price * product?.discount) / 100,
-      username:user?.name
+      username: user?.name,
     };
-    const result = await cartCollection.insertOne(newData)
-    return {success:result.acknowledged}
+    const result = await cartCollection.insertOne(newData);
+    return { success: result.acknowledged };
   }
+};
+
+export const getCart = cache(async () => {
+  const { user } = (await getServerSession(authOptions)) || {};
+  if (!user) return [];
+  const query = { email: user?.email };
+  const result = await cartCollection.find(query).toArray();
+  return result;
+});
+
+export const deleteItemFromCart = async (id) => {
+  const { user } = (await getServerSession(authOptions)) || {};
+  if (!user) return { success: false };
+  if (id?.length !== 24) {
+    return { success: false };
+  }
+  const query = { _id: new ObjectId(id) };
+  const result = await cartCollection.deleteOne(query);
+  // if (Boolean(result.deletedCount)) {
+  //   revalidatePath("/cart");
+  // }
+  return { success: Boolean(result.deletedCount) };
+};
+
+export const increaseItemBD = async (id, quantity) => {
+  const { user } = (await getServerSession(authOptions)) || {};
+  if (!user) return { success: false };
+  if (quantity > 10) {
+    return { success: false, message: "you can not buy 10 product at time" };
+  }
+  const query = { _id: new ObjectId(id) };
+  const updatedData = {
+    $inc: {
+      quantity: 1,
+    },
+  };
+  const result = await cartCollection.updateOne(query, updatedData);
+  return { success: Boolean(result.modifiedCount) };
+};
+export const decreaseItemBD = async (id, quantity) => {
+  const { user } = (await getServerSession(authOptions)) || {};
+  if (!user) return { success: false };
+  if (quantity <= 1) {
+    return { success: false, message: "quantity can not be decrease" };
+  }
+  const query = { _id: new ObjectId(id) };
+  const updatedData = {
+    $inc: {
+      quantity: -1,
+    },
+  };
+  const result = await cartCollection.updateOne(query, updatedData);
+  return { success: Boolean(result.modifiedCount) };
 };
