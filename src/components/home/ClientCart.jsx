@@ -6,6 +6,7 @@ import Link from "next/link";
 const ClientCart = ({ cartItem = [] }) => {
   const [items, setItems] = useState(cartItem);
 
+  console.log(items);
   const totalItems = useMemo(
     () => items.reduce((sum, item) => sum + item.quantity, 0),
     [items],

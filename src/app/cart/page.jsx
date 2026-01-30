@@ -9,6 +9,7 @@ const CartPage = async () => {
     ...item,
     _id: item._id.toString(),
   }));
+
   return (
     <div>
       {/* title */}

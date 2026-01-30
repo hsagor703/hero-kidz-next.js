@@ -37,11 +37,12 @@ const CheckOut = ({ cartItems = [] }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await createOrder(form);
+    console.log(result.success);
     if (result.success) {
       Swal.fire("success", "Orderd Successfull", "success");
       router.push("/");
     } else {
-      Swal.fire("success", "Something Went Wrong", "error");
+      Swal.fire("success", "Something Went Wrong❌", "error");
       router.push("/cart");
     }
   };
@@ -70,7 +71,7 @@ const CheckOut = ({ cartItems = [] }) => {
                 type="text"
                 name="name"
                 value={session?.data?.user?.name}
-                onChange={handleChange}
+                // onChange={handleChange}
                 placeholder="Full Name"
                 className="input input-bordered w-full"
                 required
@@ -82,7 +83,7 @@ const CheckOut = ({ cartItems = [] }) => {
                 type="email"
                 name="email"
                 value={session?.data?.user?.email}
-                onChange={handleChange}
+                // onChange={handleChange}
                 placeholder="Email Address"
                 className="input input-bordered w-full"
                 required

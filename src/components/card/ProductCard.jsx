@@ -7,6 +7,7 @@ const ProductCard = ({ product }) => {
   const { title, image, price, discount, ratings, reviews, sold, _id } =
     product;
 
+
   const discountedPrice = discount
     ? Math.round(price - (price * discount) / 100)
     : price;

@@ -32,7 +32,7 @@ export const handleCart = async ({ product, inc = true }) => {
       title: product?.title,
       quantity: 1,
       image: product?.image,
-      price: product?.price - (product?.price * product?.discount) / 100,
+      price:  product?.price - (product?.price * product?.discount) / 100,
       username: user?.name,
     };
     const result = await cartCollection.insertOne(newData);
