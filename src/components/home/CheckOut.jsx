@@ -39,7 +39,7 @@ const CheckOut = ({ cartItems = [] }) => {
     const result = await createOrder(form);
     console.log(result.success);
     if (result.success) {
-      Swal.fire("success", "Orderd Successfull", "success");
+      Swal.fire("success", "Orderd Successfull Check Your Email To Details", "success");
       router.push("/");
     } else {
       Swal.fire("success", "Something Went Wrong❌", "error");
