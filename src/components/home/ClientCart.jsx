@@ -86,9 +86,15 @@ const ClientCart = ({ cartItem = [] }) => {
             </div>
 
             {/* Confirm Button */}
-            <Link href={'/checkout'} className="btn btn-primary w-full mt-4">
-              Confirm Order
-            </Link>
+            {items.length === 0 ? (
+              <Link href={"/products"} className="btn btn-primary w-full mt-4">
+                Added Order
+              </Link>
+            ) : (
+              <Link href={"/checkout"} className="btn btn-primary w-full mt-4">
+                Confirm Order
+              </Link>
+            )}
           </div>
         </div>
       </div>

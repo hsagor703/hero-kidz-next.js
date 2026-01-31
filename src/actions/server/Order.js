@@ -17,17 +17,17 @@ export const createOrder = async (payload) => {
   if (cart.length === 0) {
     return { success: false };
   }
+  const totalPrice = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
 
   const newOrder = {
     createdAt: new Date().toISOString(),
     items: cart,
     ...payload,
+    totalPrice,
   };
-  const totalPrice = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
-  console.log(newOrder, totalPrice);
 
   const result = await orderCollection.insertOne(newOrder);
   if (Boolean(result.insertedId)) {

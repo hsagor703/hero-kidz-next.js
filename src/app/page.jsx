@@ -9,8 +9,8 @@ export default async function Home() {
   const session = await getServerSession(authOptions);
   return (
     <div className="space-y-20">
-      <Test/>
-      <p>from p tag {JSON.stringify(session)}</p>
+      {/* <Test/> */}
+      {/* <p>from p tag {JSON.stringify(session)}</p> */}
       <Banner />
       <Products />
     </div>
